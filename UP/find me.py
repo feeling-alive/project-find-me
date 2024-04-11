@@ -2,11 +2,9 @@ from PyQt6.QtWidgets import QMainWindow, QLabel, QWidget, QApplication, QGridLay
 from PyQt6.QtGui import QPixmap, QBrush, QPalette
 from PyQt6.QtCore import Qt
 import sys
-import random
-
+import random, pyautogui, cv2, difflib, mouse
 
 class GameWindow(QMainWindow):
-
     def __init__(self):
         super().__init__()
 
@@ -22,12 +20,10 @@ class GameWindow(QMainWindow):
 
         self.background_label = QLabel(self)
 
-
         self.load_background_image()
 
         self.characters = []
         self.print_heroes()
-
 
     def load_background_image(self):
         pixmap = QPixmap("start.png").scaled(1080, 720)
@@ -61,9 +57,45 @@ class GameWindow(QMainWindow):
             character_label.move(x, y)
             character_label.show()
             self.characters.append(character_label)
+#спавн дебиков
+class Search:
+    image_paths = ['ch0.png', 'ch1.png', 'ch2.png']
 
+    def CalcImageHash(self, FileName):
+        image = cv2.imread(FileName)
+        resized = cv2.resize(image, (8, 8), interpolation=cv2.INTER_AREA)
+        gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
+        avg = gray_image.mean()
+        ret, threshold_image = cv2.threshold(gray_image, avg, 255, 0)
+
+        _hash = ""
+        for x in range(8):
+            for y in range(8):
+                val = threshold_image[x, y]
+                if val == 255:
+                    _hash += "1"
+                else:
+                    _hash += "0"
+
+        return _hash
+
+    def run(self):
+        chel_alg = [self.CalcImageHash("ch0.png")]
+        osthash = [self.CalcImageHash(image) for image in self.image_paths]
+#двоичный код картинок
+    def mouse(self):
+        x = 0
+        y = 0
+        for _ in range(3):
+                if mouse.is_pressed(button='left'):
+                    x, y = mouse.get_position()
+                    print(f"Mouse clicked at: X={x}, Y={y}")
+#ничтожная попытка получить координаты
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = GameWindow()
     window.show()
+    search = Search()
+    search.run()
+    search.mouse()
     sys.exit(app.exec())

@@ -1,13 +1,138 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
-
+from window import InputDialog
 import sys
 import csv
 import pandas as pd
 import random
 
 
+class TableModel(QAbstractTableModel):
+
+    def __init__(self, data):
+        super(TableModel, self).__init__()
+        self._data = data
+
+    def data(self, index, role):
+        if role == Qt.ItemDataRole.DisplayRole:
+            value = self._data.iloc[index.row(), index.column()]
+            return str(value)
+
+    def rowCount(self, index):
+        return self._data.shape[0]
+
+    def columnCount(self, index):
+        return self._data.shape[1]
+
+    def headerData(self, section, orientation, role):
+        if role == Qt.ItemDataRole.DisplayRole:
+            if orientation == Qt.Orientation.Horizontal:
+                return str(self._data.columns[section])
+
+            if orientation == Qt.Orientation.Vertical:
+                return str(self._data.index[section])
+
+
+class Scoreboard(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        input_dialog = InputDialog()
+        input_dialog.show()
+        if input_dialog.exec() == QDialog.DialogCode.Accepted:
+            self.text = input_dialog.getText()
+        else:
+            self.text = "Неизвестный пользователь"
+
+        menu_bar = self.menuBar()
+        score = menu_bar.addAction("Таблица")
+        score.triggered.connect(self.table)
+
+        self.setStatusBar(QStatusBar(self))
+
+        menu_bar.setStyleSheet("""
+               *{
+               background-color:white;
+               font-size:13px;
+               font-color:#343155;
+               font-weight:bold;
+               }
+               """)
+
+        pageLayout = QVBoxLayout()
+        self.topLayout = QHBoxLayout(self)
+        self.outerLayout = QHBoxLayout(self)
+        self.frame = QFrame()
+        self.frame.setStyleSheet("""
+                   border-width: 6px;
+                   border-height: 10px;
+                   border-radius:4px;
+                   font-size:20px;
+                   font-weight:bold;
+                   color: #F8F8FF;
+               """)
+        self.setWindowTitle("Таблица лидеров")
+        self.index = []
+        self.table = QTableView()
+        self.data = []
+        self.setFixedWidth(254)
+
+        with open("newlb.csv", "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                name = row["Name"]
+                count = row["Count"]
+                self.data.append([name, count])
+
+        for i in range(len(self.data) - 1):
+            for j in range(len(self.data) - 1 - i):
+                if int(self.data[j][1]) < int(self.data[j + 1][1]):
+                    self.data[j], self.data[j + 1] = self.data[j + 1], self.data[j]
+
+        for i in range(1, len(self.data) + 1):
+            self.index.append(f"{i} место")
+        data = pd.DataFrame(self.data,
+                            columns=['Имя', 'Очки'], index=self.index
+                            )
+        self.model = TableModel(data)
+        self.table.setModel(self.model)
+        self.setCentralWidget(self.table)
+
+    def table(self):
+        if self.a is None:
+            self.a = Scoreboard()
+            self.a.show()
+        else:
+            self.a.close()
+            self.a = None
+
+
+class helpWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout()
+        self.setWindowTitle("Правила")
+        self.label = QLabel("В начале игры искомый персонаж появляется на поле."
+                            "\nИгрок должен найти заданного персонажа \nсреди других персонажей на клетчатом поле, "
+                            "используя критерии, заданные в начале игры."
+                            "\nИгрок имеет ограниченное количество времени \nи попыток для нахождения персонажа. "
+                            "\nЕсли игрок находит персонажа, он получает очки \nи продвигается на следующий уровень. "
+                            "\nС каждым уровнем количество различных персонажей \nна поле увеличивается, они могут быть"
+                            " одинаковыми, "
+                            " искомый персонаж остаётся неизменным."
+                            "\nПо истечению определённого колличества раундов время \nна таймере уменьшится на 15 секунд,"
+                            " минимальное время таймера 15 секунд."
+                            "\nЗа каждое правильное нахождение игрок получает баллы, \nчем меньше максимальное время"
+                            " таймера, тем больше очков игрок получит. "
+                            "\nИгра завершится по истечению времени \nили по окончанию попыток на нахождение "
+                            "нужного персонажа.")
+        self.label.setStyleSheet("font-size: 12pt; color: black; font-family: Better VCR")
+        self.label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.label)
+        self.setLayout(layout)
+        self.setStyleSheet("background-image: url('help.png'); background-position: cover;")
+
+        self.setLayout(layout)
 
 
 class Screen1(QMainWindow):
@@ -150,7 +275,6 @@ class GameWindow(QMainWindow):
         self.timer.start(1000)
         self.timer.stop()
 
-
     def score_up(self):
         if self.time_uper == 60:
             self.score_count += 100
@@ -178,7 +302,8 @@ class GameWindow(QMainWindow):
             self.timer_started = True
         for character in self.characters:
             if character.underMouse():
-                if character.pixmap().toImage() == QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\ch0.png").toImage():
+                if character.pixmap().toImage() == QPixmap(
+                        "C:/Users\Никита\PycharmProjects/UP\sprite\ch0.png").toImage():
                     print(True)
                     self.characters.remove(character)
                     character.hide()
@@ -324,7 +449,6 @@ class EndWindow(QMainWindow):
         movie.start()
 
     def show_scoreboard(self):
-
         self.scoreboard_window = Scoreboard()
         self.scoreboard_window.show()
 
@@ -353,6 +477,8 @@ class EndWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
+    scoreboard = Scoreboard()
+    scoreboard.show()
 
     screen1 = Screen1()
     game_window = GameWindow()

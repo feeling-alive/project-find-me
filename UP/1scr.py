@@ -1,19 +1,42 @@
-from PyQt6.QtWidgets import *
-from PyQt6.QtGui import *
-from PyQt6.QtCore import *
-
+from PyQt6.QtWidgets import QMainWindow, QLabel, QWidget, QApplication, QGridLayout, QPushButton, QVBoxLayout
+from PyQt6.QtGui import QPixmap, QBrush, QPalette, QCursor, QMovie
+from PyQt6.QtCore import Qt, pyqtSignal, QTimer, QTime, QAbstractTableModel
 import sys
-import csv
-import pandas as pd
+from window import InputDialog
 import random
 
 
+class helpWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QVBoxLayout()
+        self.setWindowTitle("Правила")
+        self.label = QLabel("В начале игры искомый персонаж появляется на поле."
+                            "\nИгрок должен найти заданного персонажа среди других персонажей на клетчатом поле, "
+                            "используя критерии, заданные в начале игры."
+                            "\nИгрок имеет ограниченное количество времени и попыток для нахождения персонажа. "
+                            "\nЕсли игрок находит персонажа, он получает очки и продвигается на следующий уровень. "
+                            "\nС каждым уровнем количество различных персонажей на поле увеличивается, они могут быть"
+                            "одинаковыми, "
+                            "искомый персонаж остаётся неизменным."
+                            "\nПо истечению определённого колличества раундов время на таймере уменьшится на 15 секунд,"
+                            "минимальное время таймера 15 секунд."
+                            "\nЗа каждое правильное нахождение игрок получает баллы, чем меньше максимальное время"
+                            "таймера тем больше очков игрок получит. "
+                            "\nИгра завершится по истечению времени или по окончанию попыток на нахождение "
+                            "нужного персонажа .")
+        self.label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.label.setStyleSheet("""
+        font-size:15px;
+        """)
+        layout.addWidget(self.label)
+        self.setLayout(layout)
 
 
 class Screen1(QMainWindow):
     def __init__(self):
         super(Screen1, self).__init__()
-        self.setWindowTitle("Find Me")
+        self.setWindowTitle("Find Met")
         self.setFixedSize(1080, 720)
         self.background_label = QLabel(self)
         self.load_background_image()
@@ -35,7 +58,7 @@ class Screen1(QMainWindow):
 
         self.label = QLabel(self)
         self.label.setGeometry(250, 60, 600, 342)
-        movie = QMovie("C:/Users\Никита\PycharmProjects/UP\sprite\ch_startgm.gif")
+        movie = QMovie("ch_startgm.gif")
         self.label.setMovie(movie)
         movie.start()
 
@@ -48,7 +71,7 @@ class Screen1(QMainWindow):
             self.w = None
 
     def load_background_image(self):
-        pixmap = QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\start2.png").scaled(1080, 720)
+        pixmap = QPixmap("start2.png").scaled(1080, 720)
         brush = QBrush(pixmap)
         palette = self.palette()
         palette.setBrush(QPalette.ColorRole.Window, brush)
@@ -62,40 +85,16 @@ class Screen1(QMainWindow):
         self.hide()
         game_window.show()
 
-
 class GameWindow(QMainWindow):
     cp = pyqtSignal(int, int)
 
     def __init__(self):
         super().__init__()
 
-        self.image_paths = ['C:/Users\Никита\PycharmProjects/UP\sprite\ch0.png']
-        self.ostch = ['C:/Users\Никита\PycharmProjects/UP\sprite\ch1.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch2.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch3.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch4.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch5.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch6.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch7.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch8.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch9.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch10.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch11.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch12.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch13.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch14.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch15.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch16.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch17.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch18.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch19.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch20.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch21.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch22.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch23.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch24.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch25.png']
-
+        self.image_paths = ['ch0.png']
+        self.ostch = ['ch1.png', 'ch2.png', 'ch3.png', 'ch4.png', 'ch5.png', 'ch6.png', 'ch7.png', 'ch8.png', 'ch9.png'
+            , 'ch10.png', 'ch11.png', 'ch12.png', 'ch13.png', 'ch14.png', 'ch15.png', 'ch16.png', 'ch17.png',
+                      'ch18.png', 'ch19.png', 'ch20.png', 'ch21.png', 'ch22.png', 'ch23.png', 'ch24.png', 'ch25.png']
         self.background_label = QLabel(self)
         self.characters = []
 
@@ -112,11 +111,10 @@ class GameWindow(QMainWindow):
         self.score.resize(200, 100)
         self.score.setStyleSheet("font-size: 25pt; color: black; font-family: Better VCR")
         self.score.setText('000000')
-        self.score_count = 000000
-        self.score_end = 0
+        self.score_count =  000000
 
         self.dead = QLabel(self)
-        pixmap = QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\dead.png")
+        pixmap = QPixmap("dead.png")
         self.dead.setPixmap(pixmap)
         self.dead.resize(180, 60)
         self.dead.move(20, 80)
@@ -130,11 +128,11 @@ class GameWindow(QMainWindow):
 
     def end_game(self):
         if self.dc == 1:
-            self.dead.setPixmap(QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\dead1.png"))
+            self.dead.setPixmap(QPixmap("dead1.png"))
         if self.dc == 2:
-            self.dead.setPixmap(QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\dead2.png"))
+            self.dead.setPixmap(QPixmap("dead2.png"))
         if self.dc == 3:
-            self.dead.setPixmap(QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\dead3.png"))
+            self.dead.setPixmap(QPixmap("dead3.png"))
             self.close()
             end_window.show()
             self.timer.stop()
@@ -145,21 +143,21 @@ class GameWindow(QMainWindow):
         self.load_background_image()
         self.print_heroes()
         self.cp.connect(self.on_character_clicked)
+
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_timer)
         self.timer.start(1000)
-        self.timer.stop()
 
 
     def score_up(self):
         if self.time_uper == 60:
-            self.score_count += 100
+            self.score_count +=100
         if self.time_uper == 45:
-            self.score_count += 200
+            self.score_count +=200
         if self.time_uper == 30:
-            self.score_count += 300
+            self.score_count +=300
         if self.time_uper == 15:
-            self.score_count += 400
+            self.score_count +=400
         self.score.setText(f"{self.score_count:06}")
 
     def update_timer(self):
@@ -178,7 +176,7 @@ class GameWindow(QMainWindow):
             self.timer_started = True
         for character in self.characters:
             if character.underMouse():
-                if character.pixmap().toImage() == QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\ch0.png").toImage():
+                if character.pixmap().toImage() == QPixmap("ch0.png").toImage():
                     print(True)
                     self.characters.remove(character)
                     character.hide()
@@ -197,7 +195,7 @@ class GameWindow(QMainWindow):
                             self.rounds_to_next_reduction = random.randint(5, 7)
                 else:
                     print(False)
-                    self.dc += 1
+                    self.dc +=1
                     self.end_game()
 
     def timer_rearm(self, countdown_time):
@@ -254,7 +252,7 @@ class GameWindow(QMainWindow):
         self.cp.emit(p.x(), p.y())
 
     def load_background_image(self):
-        pixmap = QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\start.png").scaled(1080, 720)
+        pixmap = QPixmap("start.png").scaled(1080, 720)
         brush = QBrush(pixmap)
         palette = self.palette()
         palette.setBrush(QPalette.ColorRole.Window, brush)
@@ -271,6 +269,7 @@ class GameWindow(QMainWindow):
         xc = 520
         yc = 260
         d = 300
+        pastuh = []
 
         for i, image_path in enumerate(self.image_paths):
             pixmap = QPixmap(image_path)
@@ -283,15 +282,17 @@ class GameWindow(QMainWindow):
             while not self.is_inside_rhombus(x, y, xc, yc, d):
                 x, y = random.randint(xc - d, xc + d), random.randint(yc - d, yc + d)
 
+
+            pastuh.append(x)
+            pastuh.append(y)
+            print(pastuh)
             character_label.move(x, y)
             character_label.show()
             self.characters.append(character_label)
 
-
 class EndWindow(QMainWindow):
     def __init__(self):
         super(EndWindow, self).__init__()
-
         self.setWindowTitle("Find Me")
         self.setFixedSize(1080, 720)
         self.background_label = QLabel(self)
@@ -302,15 +303,6 @@ class EndWindow(QMainWindow):
         self.rebutton.resize(250, 60)
         self.rebutton.setStyleSheet("background-color: #4CAF50; color: white; border-radius: 10px; font-weight: bold; "
                                     "font-size: 20px; font-family: Better VCR")
-
-        self.scoreboard_button = QPushButton('Таблица Рекордов', self)
-        self.scoreboard_button.clicked.connect(self.show_scoreboard)
-        self.scoreboard_button.move(420, 470)  # Вы должны указать правильные координаты
-        self.scoreboard_button.resize(250, 60)
-        self.scoreboard_button.setStyleSheet(
-            "background-color: #4CAF50; color: white; border-radius: 10px; font-weight: bold; font-size: 20px;")
-        self.scoreboard_button.clicked.connect(self.show_scoreboard)
-
         self.endbutton = QPushButton('Выход', self)
         self.endbutton.clicked.connect(self.end)
         self.endbutton.move(620, 470)
@@ -319,17 +311,12 @@ class EndWindow(QMainWindow):
                                      "font-size: 20px; font-family: Better VCR")
         self.label = QLabel(self)
         self.label.setGeometry(250, 60, 600, 342)
-        movie = QMovie("C:/Users\Никита\PycharmProjects/UP\sprite\ch_startgm.gif")
+        movie = QMovie("ch_startgm.gif")
         self.label.setMovie(movie)
         movie.start()
 
-    def show_scoreboard(self):
-
-        self.scoreboard_window = Scoreboard()
-        self.scoreboard_window.show()
-
     def load_background_image(self):
-        pixmap = QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\start2.png").scaled(1080, 720)
+        pixmap = QPixmap("start2.png").scaled(1080, 720)
         brush = QBrush(pixmap)
         palette = self.palette()
         palette.setBrush(QPalette.ColorRole.Window, brush)
@@ -353,10 +340,10 @@ class EndWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-
     screen1 = Screen1()
     game_window = GameWindow()
     end_window = EndWindow()
+
     screen1.show()
 
     sys.exit(app.exec())

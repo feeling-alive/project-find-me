@@ -5,6 +5,7 @@ from window import InputDialog
 import sys
 import csv
 import pandas as pd
+import time
 import random
 
 
@@ -147,7 +148,7 @@ class Screen1(QMainWindow):
         self.button.move(420, 470)
         self.button.resize(250, 60)
         self.button.setStyleSheet("background-color: #4CAF50; color: white; border-radius: 10px; font-weight: bold; "
-                                  "font-size: 20px;")
+                                  "font-size: 20px; font-family: Better VCR")
 
         self.button_help = QPushButton('?', self)
         self.button_help.pressed.connect(lambda: self.askButtn())
@@ -156,11 +157,11 @@ class Screen1(QMainWindow):
         self.button_help.resize(56, 56)
         self.button_help.setStyleSheet(
             "background-color: #4CAF50; color: white; border-radius: 10px; font-weight: bold; "
-            "font-size: 20px;")
+            "font-size: 20px; font-family: Better VCR")
 
         self.label = QLabel(self)
         self.label.setGeometry(250, 60, 600, 342)
-        movie = QMovie("C:/Users\Никита\PycharmProjects/UP\sprite\ch_startgm.gif")
+        movie = QMovie("sprite\ch_startgm.gif")
         self.label.setMovie(movie)
         movie.start()
 
@@ -173,7 +174,7 @@ class Screen1(QMainWindow):
             self.w = None
 
     def load_background_image(self):
-        pixmap = QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\start2.png").scaled(1080, 720)
+        pixmap = QPixmap("sprite\start2.png").scaled(1080, 720)
         brush = QBrush(pixmap)
         palette = self.palette()
         palette.setBrush(QPalette.ColorRole.Window, brush)
@@ -194,32 +195,32 @@ class GameWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.image_paths = ['C:/Users\Никита\PycharmProjects/UP\sprite\ch0.png']
-        self.ostch = ['C:/Users\Никита\PycharmProjects/UP\sprite\ch1.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch2.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch3.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch4.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch5.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch6.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch7.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch8.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch9.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch10.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch11.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch12.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch13.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch14.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch15.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch16.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch17.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch18.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch19.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch20.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch21.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch22.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch23.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch24.png',
-                      'C:/Users\Никита\PycharmProjects/UP\sprite\ch25.png']
+        self.image_paths = ['sprite\ch0.png']
+        self.ostch = ['sprite\ch1.png',
+                      'sprite\ch2.png',
+                      'sprite\ch3.png',
+                      'sprite\ch4.png',
+                      'sprite\ch5.png',
+                      'sprite\ch6.png',
+                      'sprite\ch7.png',
+                      'sprite\ch8.png',
+                      'sprite\ch9.png',
+                      'sprite\ch10.png',
+                      'sprite\ch11.png',
+                      'sprite\ch12.png',
+                      'sprite\ch13.png',
+                      'sprite\ch14.png',
+                      'sprite\ch15.png',
+                      'sprite\ch16.png',
+                      'sprite\ch17.png',
+                      'sprite\ch18.png',
+                      'sprite\ch19.png',
+                      'sprite\ch20.png',
+                      'sprite\ch21.png',
+                      'sprite\ch22.png',
+                      'sprite\ch23.png',
+                      'sprite\ch24.png',
+                      'sprite\ch25.png']
 
         self.background_label = QLabel(self)
         self.characters = []
@@ -241,7 +242,7 @@ class GameWindow(QMainWindow):
         self.score_end = 0
 
         self.dead = QLabel(self)
-        pixmap = QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\dead.png")
+        pixmap = QPixmap("sprite\dead.png")
         self.dead.setPixmap(pixmap)
         self.dead.resize(180, 60)
         self.dead.move(20, 80)
@@ -255,11 +256,11 @@ class GameWindow(QMainWindow):
 
     def end_game(self):
         if self.dc == 1:
-            self.dead.setPixmap(QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\dead1.png"))
+            self.dead.setPixmap(QPixmap("sprite\dead1.png"))
         if self.dc == 2:
-            self.dead.setPixmap(QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\dead2.png"))
+            self.dead.setPixmap(QPixmap("sprite\dead2.png"))
         if self.dc == 3:
-            self.dead.setPixmap(QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\dead3.png"))
+            self.dead.setPixmap(QPixmap("sprite\dead3.png"))
             self.close()
             end_window.show()
             self.timer.stop()
@@ -303,7 +304,7 @@ class GameWindow(QMainWindow):
         for character in self.characters:
             if character.underMouse():
                 if character.pixmap().toImage() == QPixmap(
-                        "C:/Users\Никита\PycharmProjects/UP\sprite\ch0.png").toImage():
+                        "sprite\ch0.png").toImage():
                     print(True)
                     self.characters.remove(character)
                     character.hide()
@@ -352,9 +353,9 @@ class GameWindow(QMainWindow):
             self.characters.append(character_label)
 
     def add_new_characters(self, count):
-        xc = 520
-        yc = 260
-        d = 290
+        xc = 515
+        yc = 255
+        d = 285
 
         for _ in range(count):
             pixmap = QPixmap(random.choice(self.ostch))
@@ -379,7 +380,7 @@ class GameWindow(QMainWindow):
         self.cp.emit(p.x(), p.y())
 
     def load_background_image(self):
-        pixmap = QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\start.png").scaled(1080, 720)
+        pixmap = QPixmap("sprite\start.png").scaled(1080, 720)
         brush = QBrush(pixmap)
         palette = self.palette()
         palette.setBrush(QPalette.ColorRole.Window, brush)
@@ -423,28 +424,29 @@ class EndWindow(QMainWindow):
         self.load_background_image()
         self.rebutton = QPushButton('Перезапуск', self)
         self.rebutton.clicked.connect(self.restart)
-        self.rebutton.move(220, 470)
+        self.rebutton.move(120, 470)
         self.rebutton.resize(250, 60)
         self.rebutton.setStyleSheet("background-color: #4CAF50; color: white; border-radius: 10px; font-weight: bold; "
                                     "font-size: 20px; font-family: Better VCR")
 
         self.scoreboard_button = QPushButton('Таблица Рекордов', self)
         self.scoreboard_button.clicked.connect(self.show_scoreboard)
-        self.scoreboard_button.move(420, 470)  # Вы должны указать правильные координаты
+        self.scoreboard_button.move(420, 470)
         self.scoreboard_button.resize(250, 60)
         self.scoreboard_button.setStyleSheet(
-            "background-color: #4CAF50; color: white; border-radius: 10px; font-weight: bold; font-size: 20px;")
+            "background-color: #4CAF50; color: white; border-radius: 10px; font-weight: bold; "
+            "font-size: 18px; font-family: Better VCR")
         self.scoreboard_button.clicked.connect(self.show_scoreboard)
 
         self.endbutton = QPushButton('Выход', self)
         self.endbutton.clicked.connect(self.end)
-        self.endbutton.move(620, 470)
+        self.endbutton.move(720, 470)
         self.endbutton.resize(250, 60)
         self.endbutton.setStyleSheet("background-color: red; color: white; border-radius: 10px; font-weight: bold; "
                                      "font-size: 20px; font-family: Better VCR")
         self.label = QLabel(self)
         self.label.setGeometry(250, 60, 600, 342)
-        movie = QMovie("C:/Users\Никита\PycharmProjects/UP\sprite\ch_startgm.gif")
+        movie = QMovie("sprite\ch_startgm.gif")
         self.label.setMovie(movie)
         movie.start()
 
@@ -453,7 +455,7 @@ class EndWindow(QMainWindow):
         self.scoreboard_window.show()
 
     def load_background_image(self):
-        pixmap = QPixmap("C:/Users\Никита\PycharmProjects/UP\sprite\start2.png").scaled(1080, 720)
+        pixmap = QPixmap("sprite\start2.png").scaled(1080, 720)
         brush = QBrush(pixmap)
         palette = self.palette()
         palette.setBrush(QPalette.ColorRole.Window, brush)

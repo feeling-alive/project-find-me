@@ -368,7 +368,6 @@ class GameWindow(QMainWindow):
 
             if character.underMouse():
                 if character.pixmap().toImage() == QPixmap("sprite\ch0.png").toImage():
-                    print(True)
                     self.search = True
                     self.characters.remove(character)
                     character.hide()
@@ -389,7 +388,6 @@ class GameWindow(QMainWindow):
                     break
                 else:
                     if not search:
-                        print(False)
                         self.dc += 1
                         self.end_game()
                         search = True
@@ -448,8 +446,6 @@ class GameWindow(QMainWindow):
     def mousePressEvent(self, e):
         p = e.pos()
         global_pos = self.mapToGlobal(p)
-        print(p.x(), p.y())
-
         self.cp.emit(p.x(), p.y())
 
 
@@ -463,6 +459,7 @@ class GameWindow(QMainWindow):
         self.background_label.setPixmap(pixmap)
         self.background_label.setGeometry(0, 0, pixmap.width(), pixmap.height())
         self.background_label.show()
+
 #Нахождение границ ромба
     def is_inside_rhombus(self, x, y, xc, yc, d):
         return abs(x - xc) / d + abs(y - yc) / d <= 1
